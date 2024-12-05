@@ -1,25 +1,32 @@
-import logo from './logo.svg';
 import './App.css';
+import RetrievePasswordScreen from './components/retrivePasswordScreen/retrievePasswordScreen';
+import WaitForTurnScreen from './components/waitForTurnScreen/waitForTurnScreen';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 
-function App() {
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <div className="App">
+        {/* Menu de navegação */}
+        <nav className="navigation">
+          <Link to="/retrieve-password" className="nav-link">QR Code</Link>
+          <span className="nav-separator">|</span>
+          <Link to="/wait-for-turn" className="nav-link">Senha Cliente</Link>
+        </nav>
+
+        <Routes>
+          {/* Tela do QR Code */}
+          <Route path="/retrieve-password" element={<RetrievePasswordScreen />} />
+
+          {/* Tela que mostra a senha do cliente */}
+          <Route path="/wait-for-turn" element={<WaitForTurnScreen />} />
+
+          {/* Rota inicial padrão */}
+          <Route path="/" element={<RetrievePasswordScreen />} />
+        </Routes>
+      </div>
+    </Router>
   );
-}
+};
 
 export default App;
