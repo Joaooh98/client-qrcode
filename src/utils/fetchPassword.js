@@ -5,7 +5,7 @@
     if (!response.ok) {
       throw new Error('Erro ao tirar a senha para o cliente');
     }
-    return response.text(); // realiza a chamada no back-end e retorna a senha
+    return response.json(); 
   };
 
   export const fetchQrCode = async () => {
@@ -13,6 +13,6 @@
     if (!response.ok) {
       throw new Error('Erro ao obter o QR Code');
     }
-    return response.text(); // Retorna o SVG como string
+    return response.text();
   };
   
