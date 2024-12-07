@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import './retrievePasswordScreen.css';
 import LoadQrCode from '../loadQrCode/loadQrCode';
 import { fetchTakePasswordForClient } from '../../utils/fetchPassword'; 
@@ -9,26 +9,27 @@ const RetrievePasswordScreen = () => {
   const location = useLocation();
   const [loading, setLoading] = useState(false);
 
-  const handleTakePassword = async () => {
+  const handleTakePassword = useCallback(async () => {
     try {
       setLoading(true);
-      const senha = await fetchTakePasswordForClient();
-      navigate('/wait-for-turn', { state: { senha } });
+      const response = await fetchTakePasswordForClient(); // Obtem o JSON
+      const senha = response.password; // Extraia o valor da senha
+      navigate('/wait-for-turn', { state: { senha } }); // Envie apenas o valor
     } catch (error) {
       console.error('Erro ao adquirir a senha:', error.message);
       alert('Erro ao tirar a senha. Tente novamente.');
     } finally {
       setLoading(false);
     }
-  };
+  }, [navigate]);
+  
 
   useEffect(() => {
-    // Verifica se veio com o parâmetro autoTrigger
     const params = new URLSearchParams(location.search);
     if (params.get('autoTrigger') === 'true') {
       handleTakePassword();
     }
-  }, [location]);
+  }, [location, handleTakePassword]);
 
   return (
     <div className="retrieve-password-container">
