@@ -6,10 +6,13 @@ const LoadQrCode = () => {
   const [qrCodeSvg, setQrCodeSvg] = useState(null);
   const [error, setError] = useState(null);
 
+  // Defina o token diretamente no componente
+  const token = 'e8aaf53b-a549-423c-8349-f189f03d0b5c';
+
   useEffect(() => {
     const loadQrCode = async () => {
       try {
-        const svg = await fetchQrCode();
+        const svg = await fetchQrCode(token);
         setQrCodeSvg(svg);
       } catch (err) {
         console.error(err);
@@ -18,7 +21,7 @@ const LoadQrCode = () => {
     };
 
     loadQrCode();
-  }, []);
+  }, [token]);
 
   if (error) {
     return <div className="error-message">{error}</div>;
