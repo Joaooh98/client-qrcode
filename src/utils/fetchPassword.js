@@ -1,4 +1,4 @@
-const BASE_URL = "http://ec2-44-199-197-212.compute-1.amazonaws.com:8080/password";
+const BASE_URL = "https://ec2-44-199-197-212.compute-1.amazonaws.com:6565/password";
 
 export const fetchTakePasswordForClient = async (token) => {
   if (!token) {
