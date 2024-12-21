@@ -6,7 +6,6 @@ const LoadQrCode = () => {
   const [qrCodeSvg, setQrCodeSvg] = useState(null);
   const [error, setError] = useState(null);
 
-  // Defina o token diretamente no componente
   const token = 'e8aaf53b-a549-423c-8349-f189f03d0b5c';
 
   useEffect(() => {

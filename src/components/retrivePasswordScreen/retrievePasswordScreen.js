@@ -8,9 +8,8 @@ const RetrievePasswordScreen = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [loading, setLoading] = useState(false);
-  const autoTriggered = useRef(false); // Adiciona referência para controlar disparo único
+  const autoTriggered = useRef(false); 
 
-  // Defina o token de forma segura no código
   const token = 'e8aaf53b-a549-423c-8349-f189f03d0b5c';
 
   const handleTakePassword = useCallback(async () => {
