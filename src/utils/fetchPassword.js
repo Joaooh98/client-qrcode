@@ -1,4 +1,4 @@
-const BASE_URL = "http://147.79.101.18:8080/password";
+const BASE_URL = "http://www.mrqrcode.site/password";
 
 export const fetchTakePasswordForClient = async (token) => {
   if (!token) {
