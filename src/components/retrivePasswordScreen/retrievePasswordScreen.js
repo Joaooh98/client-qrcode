@@ -1,13 +1,13 @@
-import React, { useEffect, useState, useCallback, useRef } from 'react';
-import './retrievePasswordScreen.css';
-import LoadQrCode from '../loadQrCode/loadQrCode';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { fetchTakePasswordForClient } from '../../utils/fetchPassword';
 import { useNavigate, useLocation } from 'react-router-dom';
+import './retrievePasswordScreen.css';
 
 const RetrievePasswordScreen = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [loading, setLoading] = useState(false);
+  const [buttonText, setButtonText] = useState('Tirar Senha'); // Texto do botão padrão em PT
   const autoTriggered = useRef(false);
 
   const token = 'e8aaf53b-a549-423c-8349-f189f03d0b5c';
@@ -30,6 +30,10 @@ const RetrievePasswordScreen = () => {
     }
   }, [navigate, token]);
 
+  // Funções para alterar o idioma
+  const changeToPortuguese = () => setButtonText('Tirar Senha');
+  const changeToEnglish = () => setButtonText('Take Password');
+
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     if (params.get('autoTrigger') === 'true' && !autoTriggered.current) {
@@ -40,14 +44,35 @@ const RetrievePasswordScreen = () => {
 
   return (
     <div className="retrieve-password-container">
-      <h1 className="retrieve-password-title">RETIRE SUA SENHA</h1>
-      <LoadQrCode />
+      <div className="background-animation"></div>
+
+      {/* Logo */}
+      <img src="/logo.png" alt="MR Barbearia Logo" className="logo" />
+      {/* Botões de tradução */}
+      <div className="language-buttons">
+        <button
+          className="language-button"
+          onClick={changeToPortuguese}
+          aria-label="Alterar para português"
+        >
+          PT
+        </button>
+        <button
+          className="language-button"
+          onClick={changeToEnglish}
+          aria-label="Change to English"
+        >
+          EN
+        </button>
+      </div>
+
+      {/* Botão para tirar senha */}
       <button
         className="retrieve-password-button"
         onClick={handleTakePassword}
         disabled={loading}
       >
-        {loading ? 'Processando...' : 'Tirar Senha'}
+        {loading ? 'Processando...' : buttonText}
       </button>
     </div>
   );
