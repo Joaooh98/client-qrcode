@@ -8,9 +8,9 @@ const App = () => {
     <Router>
       <div className="App">
         <Routes>
+          <Route path="/" element={<RetrievePasswordScreen />} />
           <Route path="/retrieve-password" element={<RetrievePasswordScreen />} />
           <Route path="/wait-for-turn" element={<WaitForTurnScreen />} />
-          <Route path="/" element={<RetrievePasswordScreen />} />
         </Routes>
       </div>
     </Router>

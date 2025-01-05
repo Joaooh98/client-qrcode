@@ -1,27 +1,167 @@
+/* Remove scroll e adiciona fonte */
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* Remove scroll */
+  font-family: 'Poppins', sans-serif;
+  background: #f4f4f9;
+}
+
+/* Fundo animado */
+.background-animation {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(45deg, #000000, #ffc371);
+  background-size: 200% 200%;
+  animation: gradient-animation 6s ease infinite;
+  z-index: -1;
+}
+
+@keyframes gradient-animation {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Contêiner principal */
 .wait-container {
+  position: relative;
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  text-align: center;
+  color: #fff;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* Redes sociais */
+.social-container {
+  margin-bottom: 20px;
+}
+
+.social-section {
+  margin: 20px 0;
+}
+
+.social-title {
+  font-size: 2rem; /* Texto maior por padrão */
+  margin-bottom: 10px;
+  color: #fff;
+}
+
+.google-evaluation-text {
+  font-size: 1.2rem; /* Texto mais legível */
+  margin: 10px 0;
+  color: #ddd;
+}
+
+.social-icons {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+
+.social-icons a {
+  text-decoration: none;
+  display: flex;
   align-items: center;
   justify-content: center;
-  height: 100vh;
+  border: 2px solid #ddd;
+  border-radius: 50%;
+  width: 70px; /* Ícones maiores */
+  height: 70px;
+  transition: all 0.3s ease;
+}
+
+.social-icons a:hover {
+  border-color: #fff;
+  transform: scale(1.1);
+}
+
+/* Seção de senha */
+.password-section {
+  margin-top: 30px;
 }
 
 .wait-title {
-  font-size: 24px;
-  margin-bottom: 20px;
+  font-size: 2.5rem; /* Título maior */
   font-weight: bold;
 }
 
 .password-container {
   margin-top: 20px;
-  padding: 20px;
-  border: 2px solid #000;
-  border-radius: 5px;
-  background-color: #f9f9f9;
+  padding: 20px 40px;
+  border: 2px solid #fff;
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(8px);
 }
 
 .password-text {
-  font-size: 32px;
-  font-weight: bold;
-  color: #333;
+  font-size: 2.5rem; /* Texto da senha maior */
+  font-weight: 700;
+  color: #fff;
+}
+
+/* RESPONSIVIDADE */
+/* Para telas menores que 768px */
+@media (max-width: 768px) {
+  .social-title {
+    font-size: 1.8rem;
+  }
+
+  .google-evaluation-text {
+    font-size: 1.1rem;
+  }
+
+  .social-icons a {
+    width: 60px; /* Ícones um pouco menores */
+    height: 60px;
+  }
+
+  .password-container {
+    padding: 15px 30px;
+  }
+
+  .password-text {
+    font-size: 2.3rem; /* Texto ainda legível */
+  }
+
+  .wait-title {
+    font-size: 2.2rem;
+  }
+}
+
+/* Para telas menores que 480px */
+@media (max-width: 480px) {
+  .social-title {
+    font-size: 1.6rem; /* Texto ajustado */
+  }
+
+  .google-evaluation-text {
+    font-size: 1rem;
+  }
+
+  .social-icons a {
+    width: 50px; /* Ícones menores */
+    height: 50px;
+  }
+
+  .password-container {
+    padding: 10px 20px;
+  }
+
+  .password-text {
+    font-size: 2rem; /* Texto proporcional */
+  }
+
+  .wait-title {
+    font-size: 2rem; /* Ajuste do título */
+  }
 }

@@ -1,22 +1,26 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
 import './retrievePasswordScreen.css';
 import LoadQrCode from '../loadQrCode/loadQrCode';
-import { fetchTakePasswordForClient } from '../../utils/fetchPassword'; 
+import { fetchTakePasswordForClient } from '../../utils/fetchPassword';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 const RetrievePasswordScreen = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [loading, setLoading] = useState(false);
-  const autoTriggered = useRef(false); 
+  const autoTriggered = useRef(false);
 
   const token = 'e8aaf53b-a549-423c-8349-f189f03d0b5c';
 
   const handleTakePassword = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await fetchTakePasswordForClient(token); 
-      const senha = response.password; 
+      const response = await fetchTakePasswordForClient(token);
+      const senha = response.password;
+
+      // Salva o horário de acesso no Local Storage
+      localStorage.setItem('waitForTurnAccessTime', Date.now().toString());
+
       navigate('/wait-for-turn', { state: { senha } });
     } catch (error) {
       console.error('Erro ao adquirir a senha:', error.message);
@@ -29,7 +33,7 @@ const RetrievePasswordScreen = () => {
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     if (params.get('autoTrigger') === 'true' && !autoTriggered.current) {
-      autoTriggered.current = true; 
+      autoTriggered.current = true;
       handleTakePassword();
     }
   }, [location, handleTakePassword]);
@@ -38,8 +42,8 @@ const RetrievePasswordScreen = () => {
     <div className="retrieve-password-container">
       <h1 className="retrieve-password-title">RETIRE SUA SENHA</h1>
       <LoadQrCode />
-      <button 
-        className="retrieve-password-button" 
+      <button
+        className="retrieve-password-button"
         onClick={handleTakePassword}
         disabled={loading}
       >
