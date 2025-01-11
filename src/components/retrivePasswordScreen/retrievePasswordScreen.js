@@ -51,14 +51,14 @@ const RetrievePasswordScreen = () => {
       {/* Botões de tradução */}
       <div className="language-buttons">
         <button
-          className="language-button"
+          className="language-button-pt"
           onClick={changeToPortuguese}
           aria-label="Alterar para português"
         >
           PT
         </button>
         <button
-          className="language-button"
+          className="language-button-en"
           onClick={changeToEnglish}
           aria-label="Change to English"
         >

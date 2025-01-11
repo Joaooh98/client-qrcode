@@ -1,9 +1,10 @@
+/* Estilo principal */
 .App {
   font-family: Arial, sans-serif;
   text-align: center;
 }
 
-/* Remove scroll e adiciona fonte TODAS AS TELAS*/
+/* Remove scroll e adiciona fonte em todas as telas */
 body {
   margin: 0;
   padding: 0;
@@ -11,21 +12,13 @@ body {
   font-family: 'Poppins', sans-serif;
 }
 
-/* Fundo animado TODAS AS TELAS */
+/* Fundo com imagem */
 .background-animation {
   position: absolute;
-  top: 0;
-  left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(45deg, #303030, #3f9c42);
-  background-size: 200% 200%;
-  animation: gradient-animation 6s ease infinite;
+  background: url('~/public/back-mrqrcode.png') no-repeat center center;
+  background-size: cover;
+  background-position: center ;
   z-index: -1;
-}
-
-@keyframes gradient-animation {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
 }
