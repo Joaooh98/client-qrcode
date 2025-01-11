@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import './waitForTurnScreen.css';
-import { InstaIcon } from '../icons/insta-icon';
+import BackButton from '../backButton/backButton';
 import { GoogleIcon } from '../icons/google-icon';
+import { InstaIcon } from '../icons/insta-icon';
+import './waitForTurnScreen.css';
 
 const WaitForTurnScreen = () => {
   const location = useLocation();
@@ -31,6 +32,7 @@ const WaitForTurnScreen = () => {
 
   return (
     <div className="wait-container">
+      <BackButton to="/" />
       {/* Fundo Animado */}
       <div className="background-animation"></div>
 
