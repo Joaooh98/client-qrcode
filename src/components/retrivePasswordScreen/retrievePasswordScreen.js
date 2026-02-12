@@ -1,16 +1,23 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { fetchTakePasswordForClient } from '../../utils/fetchPassword';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import './retrievePasswordScreen.css';
+
+const translations = {
+  pt: { buttonText: 'Tirar Senha', loading: 'Processando...', error: 'Erro ao tirar a senha. Tente novamente.' },
+  en: { buttonText: 'Take Password', loading: 'Processing...', error: 'Error taking password. Please try again.' },
+};
 
 const RetrievePasswordScreen = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { tenantId } = useParams();
   const [loading, setLoading] = useState(false);
-  const [buttonText, setButtonText] = useState('Tirar Senha'); // Texto do botão padrão em PT
+  const [lang, setLang] = useState('pt');
   const autoTriggered = useRef(false);
 
-  const token = 'e8aaf53b-a549-423c-8349-f189f03d0b5c';
+  const token = tenantId || 'e8aaf53b-a549-423c-8349-f189f03d0b5c';
+  const t = translations[lang];
 
   const handleTakePassword = useCallback(async () => {
     try {
@@ -18,21 +25,18 @@ const RetrievePasswordScreen = () => {
       const response = await fetchTakePasswordForClient(token);
       const senha = response.password;
 
-      // Salva o horário de acesso no Local Storage
       localStorage.setItem('waitForTurnAccessTime', Date.now().toString());
+      localStorage.setItem('currentTenant', token);
 
-      navigate('/wait-for-turn', { state: { senha } });
+      const basePath = tenantId ? `/${tenantId}` : '';
+      navigate(`${basePath}/wait-for-turn`, { state: { senha } });
     } catch (error) {
       console.error('Erro ao adquirir a senha:', error.message);
-      alert('Erro ao tirar a senha. Tente novamente.');
+      alert(t.error);
     } finally {
       setLoading(false);
     }
-  }, [navigate, token]);
-
-  // Funções para alterar o idioma
-  const changeToPortuguese = () => setButtonText('Tirar Senha');
-  const changeToEnglish = () => setButtonText('Take Password');
+  }, [navigate, token, tenantId, t.error]);
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -44,35 +48,43 @@ const RetrievePasswordScreen = () => {
 
   return (
     <div className="retrieve-password-container">
-      <div className="background-animation"></div>
+      <div
+        className="background-animation"
+        style={{ backgroundImage: `url(${process.env.PUBLIC_URL}/back-mrqrcode.png)` }}
+      />
 
-      {/* Logo */}
-      <img src="/logo.png" alt="MR Barbearia Logo" className="logo" />
-      {/* Botões de tradução */}
+      <img src={`${process.env.PUBLIC_URL}/logo.png`} alt="Logo" className="logo" />
+
       <div className="language-buttons">
         <button
           className="language-button-pt"
-          onClick={changeToPortuguese}
+          onClick={() => setLang('pt')}
           aria-label="Alterar para português"
         >
           PT
         </button>
         <button
           className="language-button-en"
-          onClick={changeToEnglish}
+          onClick={() => setLang('en')}
           aria-label="Change to English"
         >
           EN
         </button>
       </div>
 
-      {/* Botão para tirar senha */}
       <button
         className="retrieve-password-button"
         onClick={handleTakePassword}
         disabled={loading}
       >
-        {loading ? 'Processando...' : buttonText}
+        {loading ? (
+          <>
+            <span className="loading-spinner" />
+            {t.loading}
+          </>
+        ) : (
+          t.buttonText
+        )}
       </button>
     </div>
   );

@@ -8,9 +8,15 @@ const App = () => {
     <Router>
       <div className="App">
         <Routes>
+          {/* Rotas padrão (tenant default) */}
           <Route path="/" element={<RetrievePasswordScreen />} />
           <Route path="/retrieve-password" element={<RetrievePasswordScreen />} />
           <Route path="/wait-for-turn" element={<WaitForTurnScreen />} />
+
+          {/* Rotas multi-tenant: /:tenantId */}
+          <Route path="/:tenantId" element={<RetrievePasswordScreen />} />
+          <Route path="/:tenantId/retrieve-password" element={<RetrievePasswordScreen />} />
+          <Route path="/:tenantId/wait-for-turn" element={<WaitForTurnScreen />} />
         </Routes>
       </div>
     </Router>
