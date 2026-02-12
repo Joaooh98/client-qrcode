@@ -1,8 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import BackButton from '../backButton/backButton';
 import { GoogleIcon } from '../icons/google-icon';
 import { InstaIcon } from '../icons/insta-icon';
+import { fetchTenantInfo } from '../../utils/fetchPassword';
 import './waitForTurnScreen.css';
 
 const WaitForTurnScreen = () => {
@@ -12,26 +13,39 @@ const WaitForTurnScreen = () => {
   const password = location.state?.senha;
 
   const basePath = tenantId ? `/${tenantId}` : '';
+  const token = tenantId || 'e8aaf53b-a549-423c-8349-f189f03d0b5c';
+
+  const [tenant, setTenant] = useState(null);
+
+  useEffect(() => {
+    fetchTenantInfo(token)
+      .then(setTenant)
+      .catch(() => {});
+  }, [token]);
+
+  const timeLimit = (tenant?.sessionTimeoutMinutes || 40) * 60 * 1000;
 
   useEffect(() => {
     const accessTime = localStorage.getItem('waitForTurnAccessTime');
     const now = Date.now();
-    const timeLimit = 40 * 60 * 1000;
 
     if (!accessTime || now - parseInt(accessTime, 10) > timeLimit) {
       navigate(`${basePath}/`);
     }
-  }, [navigate, basePath]);
+  }, [navigate, basePath, timeLimit]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       localStorage.removeItem('waitForTurnAccessTime');
       localStorage.removeItem('currentTenant');
       navigate(`${basePath}/`);
-    }, 40 * 60 * 1000);
+    }, timeLimit);
 
     return () => clearTimeout(timer);
-  }, [navigate, basePath]);
+  }, [navigate, basePath, timeLimit]);
+
+  const instagramUrl = tenant?.instagramUrl || 'https://www.instagram.com/mrbarbearia_coimbra';
+  const googleReviewUrl = tenant?.googleReviewUrl || 'https://www.google.com/search?q=MR+Barbearia+Cr%C3%ADticas';
 
   return (
     <div className="wait-container">
@@ -51,19 +65,23 @@ const WaitForTurnScreen = () => {
       </section>
 
       <section className="social-container">
-        <SocialSection
-          title="Siga-nos nas redes sociais"
-          icon={<InstaIcon />}
-          link="https://www.instagram.com/mrbarbearia_coimbra"
-          label="Instagram"
-        />
-        <SocialSection
-          title="Ajude-nos com sua avaliação"
-          description="Sua opinião é muito importante! Clique no ícone abaixo para nos avaliar no Google."
-          icon={<GoogleIcon />}
-          link="https://www.google.com/search?q=MR+Barbearia+Cr%C3%ADticas"
-          label="Google Avaliações"
-        />
+        {instagramUrl && (
+          <SocialSection
+            title="Siga-nos nas redes sociais"
+            icon={<InstaIcon />}
+            link={instagramUrl}
+            label="Instagram"
+          />
+        )}
+        {googleReviewUrl && (
+          <SocialSection
+            title="Ajude-nos com sua avaliação"
+            description="Sua opinião é muito importante! Clique no ícone abaixo para nos avaliar no Google."
+            icon={<GoogleIcon />}
+            link={googleReviewUrl}
+            label="Google Avaliações"
+          />
+        )}
       </section>
     </div>
   );
