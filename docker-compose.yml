@@ -1,0 +1,60 @@
+services:
+
+  # ========================
+  # PostgreSQL
+  # ========================
+  postgres:
+    image: postgres:16-alpine
+    container_name: mrqrcode-db
+    environment:
+      POSTGRES_DB: mrqrcode
+      POSTGRES_USER: mrqrcode
+      POSTGRES_PASSWORD: mrqrcode
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mrqrcode"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # ========================
+  # Back-end Quarkus
+  # ========================
+  server-qrcode:
+    build:
+      context: ./server-qrcode
+      dockerfile: Dockerfile
+    container_name: mrqrcode-api
+    environment:
+      QUARKUS_PROFILE: prod
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: mrqrcode
+      DB_USERNAME: mrqrcode
+      DB_PASSWORD: mrqrcode
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # ========================
+  # Front-end React
+  # ========================
+  client-qrcode:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        REACT_APP_API_URL: /password
+    container_name: mrqrcode-web
+    ports:
+      - "3000:3000"
+    depends_on:
+      - server-qrcode
+
+volumes:
+  postgres_data:

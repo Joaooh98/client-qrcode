@@ -1,66 +1,87 @@
-import React, { useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import BackButton from '../backButton/backButton';
 import { GoogleIcon } from '../icons/google-icon';
 import { InstaIcon } from '../icons/insta-icon';
+import { fetchTenantInfo } from '../../utils/fetchPassword';
 import './waitForTurnScreen.css';
 
 const WaitForTurnScreen = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const password = location.state?.senha || 'Não disponível';
+  const { tenantId } = useParams();
+  const password = location.state?.senha;
 
-  // Verifica autorização no Local Storage
+  const basePath = tenantId ? `/${tenantId}` : '';
+  const token = tenantId || 'e8aaf53b-a549-423c-8349-f189f03d0b5c';
+
+  const [tenant, setTenant] = useState(null);
+
+  useEffect(() => {
+    fetchTenantInfo(token)
+      .then(setTenant)
+      .catch(() => {});
+  }, [token]);
+
+  const timeLimit = (tenant?.sessionTimeoutMinutes || 40) * 60 * 1000;
+
   useEffect(() => {
     const accessTime = localStorage.getItem('waitForTurnAccessTime');
     const now = Date.now();
-    const timeLimit = 40 * 60 * 1000; // 40 minutos
 
     if (!accessTime || now - parseInt(accessTime, 10) > timeLimit) {
-      navigate('/'); // Redireciona para a home se o tempo expirou ou não há registro
+      navigate(`${basePath}/`);
     }
-  }, [navigate]);
+  }, [navigate, basePath, timeLimit]);
 
-  // Define o timer para redirecionamento
   useEffect(() => {
     const timer = setTimeout(() => {
-      navigate('/'); // Redireciona para a rota inicial após o tempo definido
-    }, 40 * 60 * 1000); // Para testes, 1 minuto em milissegundos
+      localStorage.removeItem('waitForTurnAccessTime');
+      localStorage.removeItem('currentTenant');
+      navigate(`${basePath}/`);
+    }, timeLimit);
 
-    return () => clearTimeout(timer); // Limpa o timer quando o componente desmontar
-  }, [navigate]);
+    return () => clearTimeout(timer);
+  }, [navigate, basePath, timeLimit]);
+
+  const instagramUrl = tenant?.instagramUrl || 'https://www.instagram.com/mrbarbearia_coimbra';
+  const googleReviewUrl = tenant?.googleReviewUrl || 'https://www.google.com/search?q=MR+Barbearia+Cr%C3%ADticas';
 
   return (
     <div className="wait-container">
-      <BackButton to="/" />
-      {/* Fundo Animado */}
-      <div className="background-animation"></div>
+      <BackButton to={`${basePath}/`} />
+      <div
+        className="background-animation"
+        style={{ backgroundImage: `url(${process.env.PUBLIC_URL}/back-mrqrcode.png)` }}
+      />
 
-      {/* Seção de Redes Sociais */}
-      <section className="social-container">
-        <SocialSection
-          title="Siga-nos nas redes sociais"
-          icon={<InstaIcon />}
-          link="https://www.instagram.com/mrbarbearia_coimbra"
-          label="Instagram"
-        />
-        <SocialSection
-          title="Ajude-nos com sua avaliação"
-          description="Sua opinião é muito importante! Clique no botão abaixo para nos avaliar no Google."
-          icon={<GoogleIcon />}
-          link="https://www.google.com/search?q=MR+Barbearia+Críticas"
-          label="Google Avaliações"
-        />
-      </section>
-
-      {/* Seção de Senha */}
       <section className="password-section">
         <h1 className="wait-title">AGUARDE A SUA VEZ</h1>
         <div className="password-container">
           <p className="password-text">
-            {password ? `Senha: ${password}` : 'Carregando...'}
+            {password ? `Senha: ${password}` : 'Senha não disponível'}
           </p>
         </div>
+      </section>
+
+      <section className="social-container">
+        {instagramUrl && (
+          <SocialSection
+            title="Siga-nos nas redes sociais"
+            icon={<InstaIcon />}
+            link={instagramUrl}
+            label="Instagram"
+          />
+        )}
+        {googleReviewUrl && (
+          <SocialSection
+            title="Ajude-nos com sua avaliação"
+            description="Sua opinião é muito importante! Clique no ícone abaixo para nos avaliar no Google."
+            icon={<GoogleIcon />}
+            link={googleReviewUrl}
+            label="Google Avaliações"
+          />
+        )}
       </section>
     </div>
   );

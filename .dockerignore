@@ -1,0 +1,7 @@
+node_modules/
+build/
+server-qrcode/
+.git/
+.env
+.env.local
+*.md
